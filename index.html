@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>翻譯蒟蒻</title>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+
+        <style>
+            #div1 {
+                font-size: 20px;
+                display: block;
+                text-align: center;
+            }
+
+            #translate_result{
+                background-color: white;
+                color: black;
+            }
+
+            input{
+                font-size: 20px;
+            }
+
+            select{
+                font-size: 20px;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <div>
+            <br><br>
+        </div>
+
+        <div id='div1'>
+            <form name='form' id='form'>
+                Source Language:
+                <select name="請選擇語言" id='select_source_lang'>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="en">英文</option>
+                    <option value="ja">日文</option>
+                    <option value="fr">法文</option>
+                    <option value="ar">阿拉伯文</option>
+                    <option value="ko">韓文</option>
+                    <option value="es">西班牙文</option>
+                </select>
+                <br><br>
+                <input type='text' id='translate_source' size='50' placeholder="請輸入想翻譯的文字"><br><br>
+
+                Target Language:
+                <select name="請選擇語言" id='select_target_lang'>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="en">英文</option>
+                    <option value="ja">日文</option>
+                    <option value="fr">法文</option>
+                    <option value="ar">阿拉伯文</option>
+                    <option value="ko">韓文</option>
+                    <option value="es">西班牙文</option>
+                </select>
+                <br><br>
+
+                <input type='text' id='translate_result' size='50' placeholder="這裡會顯示翻譯結果" readonly="readonly"><br><br>
+                <input type='button' id='btn_translate' value='翻譯' onclick="userAction()">
+            </form>
+        </div>
+
+    </body>
+</html>
+
+    <script>
+        async function userAction()
+        {
+            var SourceLang = document.getElementById('select_source_lang');
+            var SourceLangSelected = SourceLang.options[SourceLang.selectedIndex].value;
+            var translate_data = document.getElementById('translate_source').value
+
+            var TargetLang = document.getElementById('select_target_lang');
+            var TargetLangSelected = TargetLang.options[TargetLang.selectedIndex].value;
+            
+            var url = 'https://udcwue0ku7.execute-api.us-east-1.amazonaws.com/test/';
+            var data = {
+                "content": translate_data,
+                "source-lanuage": SourceLangSelected,
+                "target-lanuage": TargetLangSelected
+            }
+
+            const response = await fetch(url,  {
+                method: 'POST', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }});
+
+            const result = await response.json();
+            console.log(result);
+
+            document.getElementById('translate_result').value = result.body;
+        }
+    </script>
